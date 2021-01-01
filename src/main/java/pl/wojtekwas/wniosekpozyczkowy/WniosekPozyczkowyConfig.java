@@ -5,6 +5,8 @@ import org.springframework.context.annotation.Configuration;
 import pl.wojtekwas.wniosekpozyczkowy.wnioski.splaty.Repayment7Percent;
 import pl.wojtekwas.wniosekpozyczkowy.wnioski.splaty.RepaymentMode;
 import pl.wojtekwas.wniosekpozyczkowy.wnioski.weryfikacja.CheckCondition;
+import pl.wojtekwas.wniosekpozyczkowy.wnioski.weryfikacja.CheckExtPrzedluzenie;
+import pl.wojtekwas.wniosekpozyczkowy.wnioski.weryfikacja.CheckExtensionCondition;
 import pl.wojtekwas.wniosekpozyczkowy.wnioski.weryfikacja.CheckOkres;
 import pl.wojtekwas.wniosekpozyczkowy.wnioski.weryfikacja.CheckTerminZlozenia;
 import pl.wojtekwas.wniosekpozyczkowy.wnioski.weryfikacja.CheckWarunkiKwotowe;
@@ -25,6 +27,11 @@ public class WniosekPozyczkowyConfig {
     @Bean
     public CheckCondition kwota() {
         return new CheckWarunkiKwotowe();
+    }
+
+    @Bean
+    public CheckExtensionCondition przedluzenie() {
+        return new CheckExtPrzedluzenie();
     }
 
     @Bean
