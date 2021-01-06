@@ -12,3 +12,4 @@ Lombok 18.6
 MapStruct 1.3.1
 IntelliJ IDEA (Community) 2019.2.3
 SoapUI 5.4.0
+Postman 7.36.1

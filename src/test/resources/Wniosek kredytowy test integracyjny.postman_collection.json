@@ -1,0 +1,241 @@
+{
+	"info": {
+		"_postman_id": "9bdf3a58-16d6-4343-8dd4-e94e060c456a",
+		"name": "Wniosek kredytowy test integracyjny",
+		"description": "- ustawienie definicji\r\n- próba założenia wniosku nie spełniającego kryterium\r\n- założenie wniosku spełniającego kryterium\r\n- przedłużenie spłaty - udane\r\n- powtórne przedłużenie spłaty - oczywiście nieudane",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "ustaw parametry",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"minimalnaKwotaPozyczki\": 2001,\r\n   \"maksymalnaKwotaPozyczki\": 20001,\r\n   \"minimalnyOkresKredytowania\": 3,\r\n   \"maksymalnyOkresKredytowania\": 35,\r\n   \"okresPrzedluzeniaSplaty\": 2\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/definicje",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"definicje"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "proba zalozenia wniosku nie spelniajacego kryteriow",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function() {\r",
+							"    pm.response.to.have.status(412);\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"kwotaPozyczki\": 1000,\r\n   \"okresKredytowania\": 5,\r\n   \"dataZlozeniaWniosku\": \"2018-10-01\",\r\n   \"imieNazwisko\": \"Egon Ebacki\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/wnioski",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"wnioski"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "zalozenie wniosku spelniajacego kryteria",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"})\r",
+							"\r",
+							"pm.test(\"process response\", function() {\r",
+							"    var id = pm.response.json().id;\r",
+							"    pm.collectionVariables.set(\"idWniosku\", id);\r",
+							"console.log(\"Returned idWniosku is: \" + pm.collectionVariables.get(\"idWniosku\"));\r",
+							" \r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"kwotaPozyczki\": 3000,\r\n   \"okresKredytowania\": 5,\r\n   \"dataZlozeniaWniosku\": \"2018-10-01\",\r\n   \"imieNazwisko\": \"Egon Ebacki\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/wnioski",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"wnioski"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "przedluzenie splaty",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/wnioski/{{idWniosku}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"wnioski",
+						"{{idWniosku}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "powtorne przedluzenie splaty nieudane",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function() {\r",
+							"    pm.response.to.have.status(412);\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/wnioski/{{idWniosku}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"wnioski",
+						"{{idWniosku}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080"
+		},
+		{
+			"key": "idWniosku",
+			"value": ""
+		}
+	]
+}
